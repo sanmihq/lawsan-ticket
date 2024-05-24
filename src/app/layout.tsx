@@ -16,7 +16,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${poppins.className} max-w-[100rem] mx-auto`}>
-        <Providers>{children}</Providers>
+        <Providers>
+          <main className="mx-5 md:mx-10 my-10">{children}</main>
+        </Providers>
       </body>
     </html>
   );

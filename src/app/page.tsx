@@ -1,11 +1,9 @@
-import { Button } from "@nextui-org/react";
-import Image from "next/image";
+import GuestForm from "./components/ui/GuestForm";
 
 export default function Home() {
   return (
-    <div>
-      <h1>Hello world</h1>
-      <Button>Click me</Button>
+    <div className="w-full flex flex-col items-center">
+      <GuestForm />
     </div>
   );
 }
