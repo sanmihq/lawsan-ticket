@@ -7,13 +7,13 @@ import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 export default function GuestForm() {
   const titles = ["Mr", "Ms", "Mrs"];
 
-  const [photo, setPhoto] = useState<File | null>(null);
   const [title, setTitle] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [matricNumber, setMatricNumber] = useState("");
   const [email, setEmail] = useState("");
   const [seat, setSeat] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -23,53 +23,51 @@ export default function GuestForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!photo) {
-      setError("Photo is required");
-      return;
-    }
+    setLoading(true);
+    setError(null);
+    setSeat(null);
 
-    const reader = new FileReader();
-    reader.readAsDataURL(photo);
-    reader.onloadend = async () => {
-      const photoBase64 = reader.result?.toString().split(",")[1];
+    console.log({
+      title,
+      firstName,
+      lastName,
+      matricNumber,
+      email,
+    });
 
-      console.log({
-        photo: photoBase64,
-        title,
-        firstName,
-        lastName,
-        matricNumber,
-        email,
+    try {
+      const response = await fetch("/api/assign-seat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title,
+          firstName,
+          lastName,
+          matricNumber,
+          email,
+        }),
       });
-    };
+
+      const data = await response.json();
+      if (response.ok) {
+        setSeat(data.seat);
+        setError(null);
+      } else {
+        setError(data.message);
+      }
+    } catch (error) {
+      setError("An unexpected error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <section className="text-left w-full">
       <form className="space-y-6" onSubmit={handleSubmit}>
         <div className="flex flex-col md:flex-row md:items-center gap-5 md:gap-10">
-          <div className="w-full md:w-1/2">
-            <label
-              className="block mb-2 text-sm text-black"
-              htmlFor="file_input"
-            >
-              Upload photo
-            </label>
-            <input
-              required
-              className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
-              aria-describedby="file_input_help"
-              id="file_input"
-              type="file"
-              onChange={(e) => setPhoto(e.target.files?.[0] || null)}
-            />
-            <p
-              className="mt-1 text-xs text-gray-500 dark:text-gray-300"
-              id="file_input_help"
-            >
-              SVG, PNG, JPG or GIF (MAX. 800x400px).
-            </p>
-          </div>
           <Select
             isRequired
             label="Title"
@@ -77,7 +75,7 @@ export default function GuestForm() {
             placeholder="Choose your title"
             value={title}
             onChange={handleSelectChange}
-            className="w-full md:w-1/2"
+            className="w-full md:w-1/2 md:pr-5"
           >
             {titles.map((title) => (
               <SelectItem key={title} value={title}>
@@ -143,6 +141,7 @@ export default function GuestForm() {
             size="md"
             color="secondary"
             type="submit"
+            isDisabled={loading}
             endContent={
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -156,7 +155,7 @@ export default function GuestForm() {
             }
             className="w-1/2 font-bold"
           >
-            Find Seat
+            {loading ? "Finding Seat..." : "Find Seat"}
           </Button>
           <Button
             size="md"
@@ -173,18 +172,32 @@ export default function GuestForm() {
                 <path d="M232,104a8,8,0,0,0,8-8V64a16,16,0,0,0-16-16H32A16,16,0,0,0,16,64V96a8,8,0,0,0,8,8,24,24,0,0,1,0,48,8,8,0,0,0-8,8v32a16,16,0,0,0,16,16H224a16,16,0,0,0,16-16V160a8,8,0,0,0-8-8,24,24,0,0,1,0-48ZM32,167.2a40,40,0,0,0,0-78.4V64H88V192H32Zm192,0V192H104V64H224V88.8a40,40,0,0,0,0,78.4Z"></path>
               </svg>
             }
-            // onClick={handleDownload}
             className="w-1/2 font-bold"
           >
             Download Ticket
           </Button>
         </div>
       </form>
+      {error && (
+        <div className="text-xs text-red-400 text-center mt-4">
+          Oh no 😯, {error} Please try again.
+        </div>
+      )}
+      {seat && (
+        <p className="text-sm text-center mt-4">
+          You will be seated at the{" "}
+          <span className={`${spaceMono.className} font-black`}>{seat}'s</span>{" "}
+          side
+        </p>
+      )}
       <p className="text-xs text-center text-gray-400 mt-6">
         By submitting, you agree that your data is being stored.
       </p>
-      {seat && <span>You will be seated at the {seat} side</span>}
-      {error && <span className="text-red-500">{error}</span>}
+      <p className="text-xs text-center text-red-400 mt-2">
+        Note: Due to possible cold starts, it may take a few moments for the
+        server to respond. If you encounter a server error, please click the
+        "Find Seat" button again.
+      </p>
     </section>
   );
 }
