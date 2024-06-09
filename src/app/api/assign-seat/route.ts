@@ -5,14 +5,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
   const { title, firstName, lastName, matricNumber, email } = await req.json();
 
   try {
-    console.log("Received request:", {
-      title,
-      firstName,
-      lastName,
-      matricNumber,
-      email,
-    });
-
     // Check for existing guest by matric number
     let { data: guest, error } = await supabase
       .from("guests")
