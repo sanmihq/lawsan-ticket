@@ -1,11 +1,10 @@
 "use client";
 
 import { spaceMono } from "@/app/fonts";
-import { DownloadButton, TicketPDF } from "./Ticket";
 import { ChangeEvent, useRef, useState } from "react";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
-import Link from "next/link";
+import { TicketPDF } from "./Ticket";
 
 export default function GuestForm() {
   const titles = ["Mr", "Ms", "Mrs"];
@@ -161,26 +160,6 @@ export default function GuestForm() {
           >
             {loading ? "Finding Seat..." : "Find Seat"}
           </Button>
-          {/* <Button
-            size="md"
-            color="secondary"
-            isDisabled={!seat}
-            endContent={
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                fill="#ffffff"
-                viewBox="0 0 256 256"
-              >
-                <path d="M232,104a8,8,0,0,0,8-8V64a16,16,0,0,0-16-16H32A16,16,0,0,0,16,64V96a8,8,0,0,0,8,8,24,24,0,0,1,0,48,8,8,0,0,0-8,8v32a16,16,0,0,0,16,16H224a16,16,0,0,0,16-16V160a8,8,0,0,0-8-8,24,24,0,0,1,0-48ZM32,167.2a40,40,0,0,0,0-78.4V64H88V192H32Zm192,0V192H104V64H224V88.8a40,40,0,0,0,0,78.4Z"></path>
-              </svg>
-            }
-            className="w-1/2 font-bold"
-          >
-            Download Ticket
-          </Button> */}
-
           {seat && (
             <div className="w-1/2">
               <PDFDownloadLink
