@@ -220,7 +220,7 @@ export function TicketPDF({ ticket }: TicketProps) {
                 <View style={styles.eventRow}>
                   <View style={styles.eventItem}>
                     <Text style={styles.category}>Date:</Text>
-                    <Text>July 28, 2024</Text>
+                    <Text>July 19, 2024</Text>
                   </View>
                   <View style={styles.eventItem}>
                     <Text style={styles.category}>Time:</Text>
