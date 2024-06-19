@@ -309,19 +309,6 @@ export function TicketPDF({ ticket }: TicketProps) {
   );
 }
 
-// export default function DownloadableTicket({ ticket }: TicketProps) {
-//   return (
-//     <PDFDownloadLink
-//       document={<TicketPDF ticket={ticket} />}
-//       fileName="lawsan-ticket.pdf"
-//     >
-//       {({ blob, url, loading, error }) =>
-//         loading ? "Generating PDF..." : "Download Ticket"
-//       }
-//     </PDFDownloadLink>
-//   );
-// }
-
 export function DownloadButton({ ticket }: TicketProps) {
   const [isReady, setIsReady] = useState(false);
 
