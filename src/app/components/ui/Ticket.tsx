@@ -140,17 +140,19 @@ export function TicketPDF({ ticket }: TicketProps) {
   const [qrCodeUrl, setQRCodeUrl] = useState("");
 
   useEffect(() => {
-    const generateQRCode = async (text: string) => {
+    const generateQRCode = async () => {
       try {
-        const url = await QRCode.toDataURL(text);
+        // Construct a string with the guest's name and seat
+        const qrCodeText = `${firstName} ${lastName} | ${seat}'s Side | ${matricNumber}`;
+        const url = await QRCode.toDataURL(qrCodeText);
         setQRCodeUrl(url);
       } catch (error) {
         console.error("Error generating QR code:", error);
       }
     };
 
-    generateQRCode(matricNumber);
-  }, [matricNumber]);
+    generateQRCode();
+  }, [firstName, lastName, seat, matricNumber]);
 
   const initials = (firstName: string, lastName: string): string => {
     const firstInitial = firstName.charAt(0).toUpperCase();
